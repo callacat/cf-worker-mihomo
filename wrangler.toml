@@ -1,5 +1,5 @@
 keep_vars = true
-name = "cf-worker-mihomo"
+name = "sub-web"
 main = "dist/_worker.js"
 compatibility_date = "2025-04-16"
 compatibility_flags = ["nodejs_compat"]
