@@ -1,24 +1,15 @@
 {
   "version": 2,
   "buildCommand": "pnpm build",
-  "builds": [
+  "outputDirectory": "dist",
+  "rewrites": [
     {
-      "src": "dist/vercel.js",
-      "use": "@vercel/node"
+      "source": "/template/(.*)",
+      "destination": "/template/$1"
     },
     {
-      "src": "dist/template/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/template/(.*)",
-      "dest": "/template/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "dist/vercel.js"
+      "source": "/(.*)",
+      "destination": "/api/vercel"
     }
   ]
 }
