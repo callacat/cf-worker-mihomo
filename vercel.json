@@ -3,14 +3,17 @@
   "installCommand": "pnpm install",
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
+  "functions": {
+    "vercel.js": {}
+  },
   "routes": [
-    {
-      "src": "/template/(.*)",
-      "dest": "/template/$1"
-    },
     {
       "src": "/(.*)",
       "dest": "/vercel.js"
+    },
+    {
+      "src": "/template/(.*)",
+      "dest": "/template/$1"
     }
   ]
 }
