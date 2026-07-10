@@ -1,15 +1,21 @@
 {
-  "version": 2,
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "pnpm install",
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
-  "rewrites": [
+  "functions": {
+    "vercel.js": {
+      "runtime": "Node.js"
+    }
+  },
+  "routes": [
     {
-      "source": "/template/(.*)",
-      "destination": "/template/$1"
+      "src": "/template/(.*)",
+      "dest": "/template/$1"
     },
     {
-      "source": "/(.*)",
-      "destination": "/api/vercel"
+      "src": "/(.*)",
+      "dest": "/vercel.js"
     }
   ]
 }
