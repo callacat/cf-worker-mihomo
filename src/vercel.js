@@ -1,8 +1,10 @@
-import http from 'http';
-import fs from 'fs';
-import path from 'path';
+import { createServer } from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+
 import { buildConfig } from './utils/env.js';
 import { handleRequest } from './utils/handler.js';
+
 
 async function handler(req, res) {
     const e = buildConfig(req, process.env, true);
@@ -10,38 +12,57 @@ async function handler(req, res) {
     try {
         const result = await handleRequest(e);
 
-        for (const [key, value] of Object.entries(result.headers)) {
+        for (const [key, value] of Object.entries(result.headers || {})) {
             res.setHeader(key, value);
         }
 
         res.statusCode = result.status;
         res.end(result.body);
+
     } catch (err) {
         res.statusCode = 400;
-        res.setHeader('Content-Type', 'application/json; charset=utf-8');
-        res.end(JSON.stringify({ error: err.message }));
+        res.setHeader(
+            'Content-Type',
+            'application/json; charset=utf-8'
+        );
+
+        res.end(JSON.stringify({
+            error: err.message
+        }));
     }
 }
 
-function createServer() {
-    return http.createServer(async (req, res) => {
-        const url = new URL(req.url, 'http://localhost');
+
+function createAppServer() {
+    return createServer(async (req, res) => {
+        const url = new URL(
+            req.url,
+            'http://localhost'
+        );
 
         if (url.pathname.startsWith('/template/')) {
-            const filePath = path.join(process.cwd(), url.pathname);
+            const filePath = path.join(
+                process.cwd(),
+                url.pathname
+            );
+
             if (fs.existsSync(filePath)) {
                 res.writeHead(200);
-                fs.createReadStream(filePath).pipe(res);
+
+                fs.createReadStream(filePath)
+                    .pipe(res);
+
                 return;
             }
         }
 
-        return handler(req, res);
+        await handler(req, res);
     });
 }
 
+
 function startServer(port) {
-    const server = createServer();
+    const server = createAppServer();
 
     server.listen(port, () => {
         console.log(`dev running: http://localhost:${port}`);
@@ -55,7 +76,10 @@ function startServer(port) {
             console.error(err);
         }
     });
+
+    return server;
 }
 
-startServer(3000);
-export default handler;
+
+// Vercel Node Runtime 会检测这个 listen()
+startServer(Number(process.env.PORT) || 3000);
