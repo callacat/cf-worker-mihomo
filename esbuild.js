@@ -18,7 +18,7 @@ const objectHasOwnPolyfill = require.resolve('core-js/actual/object/has-own');
         });
         console.log(`✔️ 打包完成: ${artifact.src} → ${artifact.dest}`);
     }
-    const verfacts = [{ src: 'src/vercel.js', dest: 'dist/api/vercel.js' }];
+    const verfacts = [{ src: 'src/vercel.js', dest: 'api/vercel.js' }];
     for (const artifact of verfacts) {
         await build({
             entryPoints: [artifact.src],
